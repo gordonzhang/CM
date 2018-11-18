@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.amazonaws.lambda.model.CalendarList;
-import com.amazonaws.lambda.model.Calendar;
-import com.amazonaws.lambda.model.Meeting;
+import com.amazonaws.lambda.model.CalendarModel;
+import com.amazonaws.lambda.model.MeetingModel;
 import com.amazonaws.lambda.model.TimeSlot;
 
 public class DatabasePersistance {
@@ -23,8 +23,8 @@ public class DatabasePersistance {
 	}
 
 	// get a single calendar using ID
-	public Calendar getCalendar(int calendarID) {
-		Calendar calendar = null;
+	public CalendarModel getCalendar(int calendarID) {
+		CalendarModel cal = null;
 		try {
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Calendar WHERE calendarID=?;");
 			ps.setInt(1, calendarID);
@@ -39,13 +39,15 @@ public class DatabasePersistance {
 				int endHouar = resultSet.getInt("endHouar");
 				int duration = resultSet.getInt("duration");
 
-				calendar = new Calendar(calID, calendarName, startDate, endDate, startHour, endHouar, duration);
+				cal = new CalendarModel(calID, calendarName, startDate, endDate, startHour, endHouar, duration);
+				cal.timeSlots = getAllTimeslot(calID);
+				cal.meetings = getAllMeetings(calID);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return calendar;
+		return cal;
 	}
 
 	// get all calendar in the database
@@ -64,10 +66,10 @@ public class DatabasePersistance {
 				int endHouar = resultSet.getInt("endHouar");
 				int duration = resultSet.getInt("duration");
 
-				Calendar calendar = new Calendar(calID, calendarName, startDate, endDate, startHour, endHouar,
+				CalendarModel calendarModel = new CalendarModel(calID, calendarName, startDate, endDate, startHour, endHouar,
 						duration);
 
-				calendarList.add(calendar);
+				calendarList.add(calendarModel);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -93,10 +95,10 @@ public class DatabasePersistance {
 	}
 
 	// add a new calendar to the database
-	public boolean addCalendar(Calendar calendar) throws Exception {
+	public boolean addCalendar(CalendarModel calendarModel) throws Exception {
 	       try {
 	            PreparedStatement ps = conn.prepareStatement("SELECT * FROM Calendar WHERE calendarID = ?;");
-	            ps.setInt(1, calendar.getCalendarID());
+	            ps.setInt(1, calendarModel.getCalendarID());
 	            ResultSet resultSet = ps.executeQuery();
 	            
 	            // already present?
@@ -106,12 +108,12 @@ public class DatabasePersistance {
 	            }
 
 	            ps = conn.prepareStatement("INSERT INTO Calendar (name,startDate,endDate,startHour,endHour,duration) values(?,?,?,?,?,?);");
-	            ps.setString(1,  calendar.getCalendarName());
-	            ps.setString(2,  calendar.getStartDate());
-	            ps.setString(3,  calendar.getEndDate());
-	            ps.setInt(4,  calendar.getStartHour());
-	            ps.setInt(5,  calendar.getEndHouar());
-	            ps.setInt(6,  calendar.getDuration());
+	            ps.setString(1,  calendarModel.getCalendarName());
+	            ps.setString(2,  calendarModel.getStartDate());
+	            ps.setString(3,  calendarModel.getEndDate());
+	            ps.setInt(4,  calendarModel.getStartHour());
+	            ps.setInt(5,  calendarModel.getEndHouar());
+	            ps.setInt(6,  calendarModel.getDuration());
 	            ps.execute();
 	            return true;
 
@@ -121,10 +123,10 @@ public class DatabasePersistance {
 	}
 
 	// add a new meeting to the table
-	public boolean addMeeting(Meeting meeting) throws Exception {
+	public boolean addMeeting(MeetingModel meetingModel) throws Exception {
 		 try {
 	            PreparedStatement ps = conn.prepareStatement("SELECT * FROM Meeting WHERE meetingID = ?;");
-	            ps.setInt(1, meeting.getMeetingID());
+	            ps.setInt(1, meetingModel.getMeetingID());
 	            ResultSet resultSet = ps.executeQuery();
 	            
 	            // already present?
@@ -134,12 +136,12 @@ public class DatabasePersistance {
 	            }
 
 	            ps = conn.prepareStatement("INSERT INTO Meeting (meetingName,meetingLocaion,meetingPerticipent,meetingDate,timeSlotID,calendarID) values(?,?,?,?,?,?);");
-	            ps.setString(1,  meeting.getMeetingName());
-	            ps.setString(2,  meeting.getMeetingLocaion());
-	            ps.setString(3,  meeting.getMeetingPerticipent());
-	            ps.setString(4,  meeting.getMeetingDate());
-	            ps.setInt(5,  meeting.getTimeSlotID());
-	            ps.setInt(6,  meeting.getCalendarID());
+	            ps.setString(1,  meetingModel.getMeetingName());
+	            ps.setString(2,  meetingModel.getMeetingLocaion());
+	            ps.setString(3,  meetingModel.getMeetingPerticipent());
+	            ps.setString(4,  meetingModel.getMeetingDate());
+	            ps.setInt(5,  meetingModel.getTimeSlotID());
+	            ps.setInt(6,  meetingModel.getCalendarID());
 	            ps.execute();
 	            return true;
 
@@ -231,9 +233,38 @@ public class DatabasePersistance {
 		return timeSlotList;
 	}
 
+	// get all meetings from the table
+	public List<MeetingModel> getAllMeetings(int calendarID) {
+		List<MeetingModel> MeetingModels = new ArrayList<MeetingModel>();
+		
+		try {
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM MeetingsTable WHERE calendarID=?;");
+			ps.setInt(1, calendarID);
+			ResultSet resultSet = ps.executeQuery();
+
+			while (resultSet.next()) {
+				int meetingID = resultSet.getInt("meetingID");
+				String meetingName = resultSet.getString("meetingName");
+				String meetingLocaion = resultSet.getString("meetingLocaion");
+				String meetingPerticipent = resultSet.getString("meetingPerticipent");
+				String meetingDate = resultSet.getString("meetingDate");
+				int timeSlotID = resultSet.getInt("timeSlotID");
+
+				MeetingModel meetingModel = new MeetingModel(meetingID, meetingName, meetingLocaion, meetingPerticipent,
+						meetingDate, timeSlotID, calendarID);
+				
+				MeetingModels.add(meetingModel);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return MeetingModels;
+	}
+	
 	// set the time slot status
 	public boolean setTimeslotStatus(int timeslotID, int statusFlag) {
-		Calendar calendar = null;
+		CalendarModel calendarModel = null;
 		try {
 			PreparedStatement ps = conn.prepareStatement("UPDATE aviliableTimeSlot SET timeSlotStatus=? WHERE timeslotID=?;");
 			ps.setInt(1, statusFlag);

@@ -1,6 +1,13 @@
 package com.amazonaws.lambda.model;
 
-public class Calendar {
+import java.util.List;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
+import com.amazonaws.lambda.db.DatabasePersistance;
+
+public class CalendarModel {
 
 	private int calendarID;
 	private String calendarName;
@@ -9,8 +16,10 @@ public class Calendar {
 	private int startHour;
 	private int endHouar;
 	private int duration;
-
-	public Calendar(String calendarName, String startDate, String endDate, int startHour, int endHouar,
+	public List<TimeSlot> timeSlots;
+	public List<MeetingModel> meetings;
+	
+	public CalendarModel(String calendarName, String startDate, String endDate, int startHour, int endHouar,
 			int duration) {
 		this.calendarName = calendarName;
 		this.startDate = startDate;
@@ -20,7 +29,7 @@ public class Calendar {
 		this.duration = duration;
 	}
 
-	public Calendar(int calendarID, String calendarName, String startDate, String endDate, int startHour,
+	public CalendarModel(int calendarID, String calendarName, String startDate, String endDate, int startHour,
 			int endHouar, int duration) {
 		this.calendarID = calendarID;
 		this.calendarName = calendarName;
@@ -87,5 +96,44 @@ public class Calendar {
 		this.duration = duration;
 	}
 	
+	
+	public CalendarModel getCalendar(int CalendarID) throws Exception {
+		DatabasePersistance dp = new DatabasePersistance();
+		CalendarModel cal = dp.getCalendar(CalendarID);
+		return cal;
+	}
+	
+	public JSONArray getAllTimeSlotsInJSON() {
+		JSONArray JSONTimeSlots = new JSONArray();
+		for (int i = 0; i < timeSlots.size(); ++i) {
+			TimeSlot timeSlot = timeSlots.get(i);
+			JSONObject ts = new JSONObject();
+			ts.put("timeSlotID", timeSlot.getTimeSlotID());
+			ts.put("date", timeSlot.getDate());
+			ts.put("calendarID", timeSlot.getCalendarID());
+			ts.put("timeSlotStatus", timeSlot.getTimeSlotStatus());
+			JSONTimeSlots.add(ts);
+		}
+		return JSONTimeSlots;
+	}
+	
+	
+	public JSONArray getAllMeetingsInJSON() {
+		JSONArray JSONMeetings = new JSONArray();
+		for (int i = 0; i < meetings.size(); ++i) {
+			MeetingModel meetingModel = meetings.get(i);
+			JSONObject mt = new JSONObject();
+			mt.put("meetingID", meetingModel.getTimeSlotID());
+			mt.put("meetingName", meetingModel.getMeetingName());
+			mt.put("meetingLocaion", meetingModel.getMeetingLocaion());
+			mt.put("meetingPerticipent", meetingModel.getMeetingPerticipent());
+			mt.put("meetingDate", meetingModel.getMeetingDate());
+			mt.put("timeSlotID", meetingModel.getTimeSlotID());
+			mt.put("calendarID", meetingModel.getCalendarID());
+
+			JSONMeetings.add(mt);
+		}
+		return JSONMeetings;
+	}
 
 }

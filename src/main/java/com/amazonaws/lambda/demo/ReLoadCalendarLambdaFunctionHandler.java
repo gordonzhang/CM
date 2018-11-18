@@ -12,7 +12,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import com.amazonaws.lambda.model.CalendarList;
-import com.amazonaws.lambda.model.Calendar;
+import com.amazonaws.lambda.model.CalendarModel;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
@@ -30,6 +30,7 @@ public class ReLoadCalendarLambdaFunctionHandler implements RequestStreamHandler
 	private final static JSONParser parser = new JSONParser();
 	private final static JSONObject handerJson = new JSONObject();
 
+	@SuppressWarnings("unchecked")
 	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
 		// TODO Auto-generated method stub
 		logger = context.getLogger();
@@ -45,11 +46,11 @@ public class ReLoadCalendarLambdaFunctionHandler implements RequestStreamHandler
 		JSONObject responseBody = new JSONObject();
 
 		CalendarList instance = CalendarList.getInstance();
-		Calendar calendar = new Calendar("123123", "123123", "123123", 0, 0, 0);
-		Calendar calendarModel1 = new Calendar("123123", "123123", "123123", 0, 0, 0);
-		Calendar calendarModel2 = new Calendar("123123", "123123", "123123", 0, 0, 0);
-		Calendar calendarModel3 = new Calendar("123123", "123123", "123123", 0, 0, 0);
-		instance.add(calendar);
+		CalendarModel calendarModel = new CalendarModel("123123", "123123", "123123", 0, 0, 0);
+		CalendarModel calendarModel1 = new CalendarModel("123123", "123123", "123123", 0, 0, 0);
+		CalendarModel calendarModel2 = new CalendarModel("123123", "123123", "123123", 0, 0, 0);
+		CalendarModel calendarModel3 = new CalendarModel("123123", "123123", "123123", 0, 0, 0);
+		instance.add(calendarModel);
 		instance.add(calendarModel1);
 		instance.add(calendarModel2);
 		instance.add(calendarModel3);
@@ -63,7 +64,7 @@ public class ReLoadCalendarLambdaFunctionHandler implements RequestStreamHandler
 			JSONObject header = (JSONObject) event.get("queryStringParameters");
 			int count = 0;
 			List<Integer> calendarL = new ArrayList<Integer>();
-			for (Calendar m : instance.getCalendarList()) {
+			for (CalendarModel m : instance.getCalendarList()) {
 				calendarL.add(count);
 				count++;
 			}

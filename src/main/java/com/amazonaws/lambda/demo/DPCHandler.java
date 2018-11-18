@@ -1,3 +1,4 @@
+//test test
 package com.amazonaws.lambda.demo;
 
 import java.io.IOException;
@@ -8,7 +9,7 @@ import java.io.OutputStreamWriter;
 import java.io.BufferedReader;
 
 import com.amazonaws.lambda.model.CalendarList;
-import com.amazonaws.lambda.model.Calendar;
+import com.amazonaws.lambda.model.CalendarModel;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
@@ -71,7 +72,7 @@ public class DPCHandler implements RequestStreamHandler {
 				
 				try {
 					
-					Calendar cal = instance.remove(calendarID);
+					CalendarModel cal = instance.remove(calendarID);
 					responseBody.put("result", "Success");
 					responseCode = 200;
 
