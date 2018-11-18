@@ -11,7 +11,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import com.amazonaws.lambda.model.CalendarList;
-import com.amazonaws.lambda.model.CalendarModel;
+import com.amazonaws.lambda.model.Calendar;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
@@ -69,10 +69,10 @@ public class CreateCalendarLambdaFunctionHandler implements RequestStreamHandler
 				reponseJson = responseCreator("unsuccesful null value", 306, reponseJson, responseBody);
 			}
 			try {
-				CalendarModel calendarModel = new CalendarModel(calendarName, startDate, endDate, startHour, endHour,
+				Calendar calendar = new Calendar(calendarName, startDate, endDate, startHour, endHour,
 						duration);
-				CalendarList.getInstance().add(calendarModel);
-				String insertCal_asJson = new Gson().toJson(calendarModel);
+				CalendarList.getInstance().add(calendar);
+				String insertCal_asJson = new Gson().toJson(calendar);
 				responseBody.put("validation", insertCal_asJson);
 				reponseJson = responseCreator("succesful！！", 200, reponseJson, responseBody);
 			} catch (Exception ex) {

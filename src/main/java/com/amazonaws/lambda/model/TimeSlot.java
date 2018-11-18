@@ -1,12 +1,12 @@
 package com.amazonaws.lambda.model;
 
-public class aviliableTimeSlotModel {
+public class TimeSlot {
 	private int timeSlotID;
 	private String date;
 	private int calendarID;
 	private int timeSlotStatus;
 
-	public aviliableTimeSlotModel(int timeSlotID, String date, int calendarID, int timeSlotStatus) {
+	public TimeSlot(int timeSlotID, String date, int calendarID, int timeSlotStatus) {
 		super();
 		this.timeSlotID = timeSlotID;
 		this.date = date;
@@ -14,7 +14,7 @@ public class aviliableTimeSlotModel {
 		this.timeSlotStatus = timeSlotStatus;
 	}
 
-	public aviliableTimeSlotModel(String date, int calendarID, int timeSlotStatus) {
+	public TimeSlot(String date, int calendarID, int timeSlotStatus) {
 		super();
 		this.timeSlotID = timeSlotID;
 		this.date = date;

@@ -1,6 +1,6 @@
 package com.amazonaws.lambda.model;
 
-public class MeetingModel {
+public class Meeting {
 	
 	private int meetingID;
 	private String meetingName;
@@ -11,7 +11,7 @@ public class MeetingModel {
 	private int calendarID; // use to identify which calendar it is in
 	
 	
-	public MeetingModel(int meetingID, String meetingName, String meetingLocaion, String meetingPerticipent,
+	public Meeting(int meetingID, String meetingName, String meetingLocaion, String meetingPerticipent,
 			String meetingDate,int timeSlotID, int calendarID) {
 		super();
 		this.meetingID = meetingID;
@@ -30,7 +30,7 @@ public class MeetingModel {
 		this.timeSlotID = timeSlotID;
 	}
 
-	public MeetingModel(String meetingName, String meetingLocaion, String meetingPerticipent,
+	public Meeting(String meetingName, String meetingLocaion, String meetingPerticipent,
 			String meetingDate, int timeSlotID, int calendarID) {
 		super();
 		this.meetingName = meetingName;

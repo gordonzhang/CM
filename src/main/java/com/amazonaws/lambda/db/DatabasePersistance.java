@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.amazonaws.lambda.model.CalendarList;
-import com.amazonaws.lambda.model.CalendarModel;
-import com.amazonaws.lambda.model.MeetingModel;
-import com.amazonaws.lambda.model.aviliableTimeSlotModel;
+import com.amazonaws.lambda.model.Calendar;
+import com.amazonaws.lambda.model.Meeting;
+import com.amazonaws.lambda.model.TimeSlot;
 
 public class DatabasePersistance {
 	private Connection conn;
@@ -23,8 +23,8 @@ public class DatabasePersistance {
 	}
 
 	// get a single calendar using ID
-	public CalendarModel getCalendar(int calendarID) {
-		CalendarModel calendar = null;
+	public Calendar getCalendar(int calendarID) {
+		Calendar calendar = null;
 		try {
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Calendar WHERE calendarID=?;");
 			ps.setInt(1, calendarID);
@@ -39,7 +39,7 @@ public class DatabasePersistance {
 				int endHouar = resultSet.getInt("endHouar");
 				int duration = resultSet.getInt("duration");
 
-				calendar = new CalendarModel(calID, calendarName, startDate, endDate, startHour, endHouar, duration);
+				calendar = new Calendar(calID, calendarName, startDate, endDate, startHour, endHouar, duration);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -64,7 +64,7 @@ public class DatabasePersistance {
 				int endHouar = resultSet.getInt("endHouar");
 				int duration = resultSet.getInt("duration");
 
-				CalendarModel calendar = new CalendarModel(calID, calendarName, startDate, endDate, startHour, endHouar,
+				Calendar calendar = new Calendar(calID, calendarName, startDate, endDate, startHour, endHouar,
 						duration);
 
 				calendarList.add(calendar);
@@ -93,7 +93,7 @@ public class DatabasePersistance {
 	}
 
 	// add a new calendar to the database
-	public boolean addCalendar(CalendarModel calendar) throws Exception {
+	public boolean addCalendar(Calendar calendar) throws Exception {
 	       try {
 	            PreparedStatement ps = conn.prepareStatement("SELECT * FROM Calendar WHERE calendarID = ?;");
 	            ps.setInt(1, calendar.getCalendarID());
@@ -121,7 +121,7 @@ public class DatabasePersistance {
 	}
 
 	// add a new meeting to the table
-	public boolean addMeeting(MeetingModel meeting) throws Exception {
+	public boolean addMeeting(Meeting meeting) throws Exception {
 		 try {
 	            PreparedStatement ps = conn.prepareStatement("SELECT * FROM Meeting WHERE meetingID = ?;");
 	            ps.setInt(1, meeting.getMeetingID());
@@ -165,7 +165,7 @@ public class DatabasePersistance {
 	}
 
 	// add time slots to the table
-	public boolean addTimeSlot(aviliableTimeSlotModel timeSlot) throws Exception {
+	public boolean addTimeSlot(TimeSlot timeSlot) throws Exception {
 		 try {
 	            PreparedStatement ps = conn.prepareStatement("SELECT * FROM aviliableTimeSlot WHERE timeslotID = ?;");
 	            ps.setInt(1, timeSlot.getTimeSlotID());
@@ -206,8 +206,8 @@ public class DatabasePersistance {
 	}
 
 	// get all timeslot from the table
-	public List<aviliableTimeSlotModel> getAllTimeslot(int calendarID) {
-		List<aviliableTimeSlotModel> timeSlotList = new ArrayList<aviliableTimeSlotModel>();
+	public List<TimeSlot> getAllTimeslot(int calendarID) {
+		List<TimeSlot> timeSlotList = new ArrayList<TimeSlot>();
 		
 		try {
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM aviliableTimeSlotModel WHERE calendarID=?;");
@@ -220,7 +220,7 @@ public class DatabasePersistance {
 				int calID = resultSet.getInt("calendarID");
 				int timeSlotStatus = resultSet.getInt("timeSlotStatus");
 
-				aviliableTimeSlotModel timeSlot = new aviliableTimeSlotModel(timeSlotID, date, calendarID, timeSlotStatus);
+				TimeSlot timeSlot = new TimeSlot(timeSlotID, date, calendarID, timeSlotStatus);
 				
 				timeSlotList.add(timeSlot);
 			}
@@ -233,7 +233,7 @@ public class DatabasePersistance {
 
 	// set the time slot status
 	public boolean setTimeslotStatus(int timeslotID, int statusFlag) {
-		CalendarModel calendar = null;
+		Calendar calendar = null;
 		try {
 			PreparedStatement ps = conn.prepareStatement("UPDATE aviliableTimeSlot SET timeSlotStatus=? WHERE timeslotID=?;");
 			ps.setInt(1, statusFlag);

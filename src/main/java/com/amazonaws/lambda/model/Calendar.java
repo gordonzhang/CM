@@ -1,6 +1,6 @@
 package com.amazonaws.lambda.model;
 
-public class CalendarModel {
+public class Calendar {
 
 	private int calendarID;
 	private String calendarName;
@@ -10,7 +10,7 @@ public class CalendarModel {
 	private int endHouar;
 	private int duration;
 
-	public CalendarModel(String calendarName, String startDate, String endDate, int startHour, int endHouar,
+	public Calendar(String calendarName, String startDate, String endDate, int startHour, int endHouar,
 			int duration) {
 		this.calendarName = calendarName;
 		this.startDate = startDate;
@@ -20,7 +20,7 @@ public class CalendarModel {
 		this.duration = duration;
 	}
 
-	public CalendarModel(int calendarID, String calendarName, String startDate, String endDate, int startHour,
+	public Calendar(int calendarID, String calendarName, String startDate, String endDate, int startHour,
 			int endHouar, int duration) {
 		this.calendarID = calendarID;
 		this.calendarName = calendarName;

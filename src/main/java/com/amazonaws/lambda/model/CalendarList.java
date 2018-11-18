@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CalendarList {
-	private List<CalendarModel> calendarList;
+	private List<Calendar> calendarList;
 	
 	
 	private static CalendarList _instance;
@@ -17,25 +17,25 @@ public class CalendarList {
 	}
 	
 	private CalendarList() {
-		calendarList = new ArrayList<CalendarModel>();
+		calendarList = new ArrayList<Calendar>();
 	}
 
 	
-	public void add(CalendarModel cal) {
+	public void add(Calendar cal) {
 		calendarList.add(cal);
 	}
 	
-	public CalendarModel remove(int CalendarID) {
-		CalendarModel result = calendarList.remove(CalendarID);
+	public Calendar remove(int CalendarID) {
+		Calendar result = calendarList.remove(CalendarID);
 		return result;
 	}
 	
 	
-	public List<CalendarModel> getCalendarList() {
+	public List<Calendar> getCalendarList() {
 		return calendarList;
 	}
 
-	public void setCalendarList(List<CalendarModel> calendarList) {
+	public void setCalendarList(List<Calendar> calendarList) {
 		this.calendarList = calendarList;
 	}
 	
