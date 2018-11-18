@@ -1,4 +1,3 @@
-//test test
 package com.amazonaws.lambda.demo;
 
 import java.io.IOException;
