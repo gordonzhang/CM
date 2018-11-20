@@ -40,8 +40,6 @@ public class DatabasePersistance {
 				int duration = resultSet.getInt("duration");
 
 				cal = new CalendarModel(calID, calendarName, startDate, endDate, startHour, endHouar, duration);
-				cal.timeSlots = getAllTimeslot(calID);
-				cal.meetings = getAllMeetings(calID);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -279,6 +277,77 @@ public class DatabasePersistance {
 			e.printStackTrace();
 		}
 		return true;
+	}
+	
+	// get meetings
+	public List<MeetingModel> getMeetings(int calendarID, String year, String month, String day) {
+		List<MeetingModel> MeetingModels = new ArrayList<MeetingModel>();
+		PreparedStatement ps;
+		try {
+			if (day.equals("00")) {
+				ps = conn.prepareStatement("SELECT * FROM Meeting WHERE calendarID=? AND date LIKE ?;");
+				ps.setInt(1, calendarID);
+				ps.setString(2, year+month+"%");
+			} else {
+				ps = conn.prepareStatement("SELECT * FROM Meeting WHERE calendarID=? AND date=?;");
+				ps.setInt(1, calendarID);
+				ps.setString(2, year+month+day+"%");
+			}
+			
+			ResultSet resultSet = ps.executeQuery();
+
+			while (resultSet.next()) {
+				int meetingID = resultSet.getInt("meetingID");
+				String meetingName = resultSet.getString("name");
+				String meetingLocaion = resultSet.getString("location");
+				String meetingPerticipent = resultSet.getString("participant");
+				String meetingDate = resultSet.getString("date");
+				int timeSlotID = resultSet.getInt("timeSlotID");
+
+				MeetingModel meetingModel = new MeetingModel(meetingID, meetingName, meetingLocaion, meetingPerticipent,
+						meetingDate, timeSlotID, calendarID);
+				
+				MeetingModels.add(meetingModel);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return MeetingModels;
+	}
+	
+	// get timeslots
+	public List<TimeSlot> getTimeSlots(int calendarID, String year, String month, String day) {
+		List<TimeSlot> timeSlots = new ArrayList<TimeSlot>();
+		PreparedStatement ps;
+		try {
+			if (day.equals("00")) {
+				ps = conn.prepareStatement("SELECT * FROM avilableTimeSlot WHERE calendarID=? AND date LIKE ?;");
+				ps.setInt(1, calendarID);
+				ps.setString(2, month+"-"+"%"+"-"+year+"%");
+			} else {
+				ps = conn.prepareStatement("SELECT * FROM avilableTimeSlot WHERE calendarID=? AND date LIKE ?;");
+				ps.setInt(1, calendarID);
+				ps.setString(2, month+"-"+day+"-"+year+"%");
+			}
+			
+			ResultSet resultSet = ps.executeQuery();
+
+			while (resultSet.next()) {
+				int timeSlotID = resultSet.getInt("timeSlotID");
+				String date = resultSet.getString("date");
+				int timeSlotStatus = resultSet.getInt("timeSlotStatus");
+				int calID = resultSet.getInt("calendarID");
+
+				TimeSlot ts = new TimeSlot(timeSlotID, date, calID, timeSlotStatus);
+				
+				timeSlots.add(ts);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return timeSlots;
 	}
 
 }

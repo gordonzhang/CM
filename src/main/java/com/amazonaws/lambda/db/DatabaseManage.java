@@ -6,9 +6,9 @@ import java.sql.DriverManager;
 public class DatabaseManage {
 	// These are to be configured and NEVER stored in the code.
 		// once you retrieve this code, you can update
-		public final static String rdsMySqlDatabaseUrl = "calculatordb.cnzaavxichgg.us-east-2.rds.amazonaws.com";
-		public final static String dbUsername = "calcAdmin";
-		public final static String dbPassword = "calc:pass";
+		public final static String rdsMySqlDatabaseUrl = "calendardb.cdfwibjyhe4s.us-east-2.rds.amazonaws.com";
+		public final static String dbUsername = "cs509";
+		public final static String dbPassword = "cs5091234";
 			
 		public final static String jdbcTag = "jdbc:mysql://";
 		public final static String rdsMySqlDatabasePort = "3306";
